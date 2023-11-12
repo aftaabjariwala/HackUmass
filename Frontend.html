@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Revival</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        header {
+            /* background-image: linear-gradient(140deg, #EADEDB 0%, #BC70A4 50%, #BFD641 75%); */
+            background-color: white;
+            color: #ffffff;
+            text-align: center;
+            padding: 5px;
+        }
+
+        header h1 {
+            font-family: 'Yellowtail', cursive;
+            font-size: 2.5em;
+            margin: 0;
+            margin-left: -80%;
+            color: red
+        }
+
+        header img {
+            width: 55px;
+            height: auto;
+            position: fixed;
+            margin-left: -41.5%;
+
+        }
+
+        main {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .slider {
+            display: flex;
+            width: 600%;
+            transition: transform 1.5s ease-in-out;
+        }
+
+        .slide {
+            width: 16.6667%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide img {
+            width: 100%;
+            height: auto;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-20px);
+            }
+
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .slide p {
+            color: white;
+            font-family: 'Snell Roundhand', cursive;
+            font-size: 1.5em;
+            margin: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            transform: translate(-50%, -50%);
+            animation: bounce 1.5s ease-in-out infinite;
+        }
+
+        .search-bar-container {
+            background-color: red;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            height: 50px;
+            display: none;
+            transition: max-height 0.3s ease;
+            position: relative;
+            z-index: 1100;
+            /* Adjust the z-index to a higher value */
+        }
+
+
+        .search-bar-container.active {
+            max-height: 100px;
+        }
+
+        .search-input {
+            flex: 1;
+            height: 67%;
+            padding: 5px;
+            border: none;
+            border-radius: 4px;
+            width: 80%;
+            margin-left: 1%;
+            outline: none;
+        }
+
+        .search-button {
+            width: 15%;
+            height: 100%;
+            padding: 5px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 1%;
+        }
+
+        .search-button:hover {
+            background-color: darkred;
+        }
+
+        .Select-type {
+            height: 0px;
+        }
+
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            z-index: 1000;
+        }
+
+        #loading-spinner {
+            width: 18%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .search-container {
+            position: fixed;
+            color: black;
+            margin-top: -3%;
+            margin-left: 95%;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Yellowtail&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
+</head>
+
+<body>
+
+    <header>
+        <div>
+            <img src="Images/logo.png" alt="Logo">
+            <h1>Recipe &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reveal</h1>
+            <div class="search-container">
+                <i id="toggleIcon" class="bi bi-search" onclick="toggleSearchAndIcon()"
+                    style="font-size: 1.5rem; cursor: pointer; color:red"></i>
+            </div>
+        </div>
+
+    </header>
+    <div id="loading-overlay">
+        <img id="loading-spinner" src="Images/loading.gif" alt="Loading...">
+    </div>
+    <div class="search-bar-container" id="searchBarContainer">
+        <div class="Select-type">
+            <label for="foodType" style="color: white;">Select food type:</label>
+            <select id="foodType" name="foodType">
+                <option value="veg">Vegetarian</option>
+                <option value="nonveg">Non-Vegetarian</option>
+            </select>
+
+        </div>
+        <div style="padding-left: 250px;">
+            <input type="text" class="search-input" placeholder="Search..." id="searchInput">
+            <button class="search-button" onclick="showLoading()">SEARCH</button>
+        </div>
+    </div>
+
+    <main>
+        <div class="slider">
+            <!-- Each .slide represents an image -->
+            <div class="slide">
+                <img src="Images/chinese.png" alt="Image 1">
+                <p>Your Pantry, Our AI, Endless Possibilities!</p>
+            </div>
+            <div class="slide">
+                <img src="Images/indian.png" alt="Image 2">
+                <p>From AI to Plate: Delight in Every Bite!</p>
+            </div>
+            <div class="slide">
+                <img src="Images/indian1.png" alt="Image 3">
+                <p>Turning Everyday Ingredients into Extraordinary Meals!</p>
+            </div>
+            <div class="slide">
+                <img src="Images/japanese.png" alt="Image 4">
+                <p>From Data to Delicious with AI</p>
+            </div>
+            <div class="slide">
+                <img src="Images/mexican.png" alt="Image 5">
+                <p>Your Pantry, Our AI, Endless Possibilities!</p>
+            </div>
+            <div class="slide">
+                <img src="Images/usa.png" alt="Image 6">
+                <p>From AI to Plate: Delight in Every Bite!</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+    </footer>
+
+    <script>
+        const slider = document.querySelector('.slider');
+        let counter = 1;
+
+        function showSlide() {
+            if (counter === 6) {
+                counter = 1;
+                slider.style.transition = 'none';
+                slider.style.transform = 'translateX(0)';
+                setTimeout(() => {
+                    slider.style.transition = 'transform 1.5s ease-in-out';
+                }, 100);
+            } else {
+                counter++;
+            }
+            slider.style.transform = `translateX(-${(counter - 1) * 16.6667}%)`;
+        }
+
+        function showLoading() {
+            document.getElementById('loading-overlay').style.display = 'block';
+            myfunction();
+            setTimeout(function () {
+                document.getElementById('loading-overlay').style.display = 'none';
+            }, 5000);
+        }
+
+        function toggleSearchAndIcon() {
+            var icon = document.getElementById('toggleIcon');
+            var searchBarContainer = document.getElementById('searchBarContainer');
+
+            // Toggle search icon
+            if (icon.classList.contains('bi-search')) {
+                icon.classList.remove('bi-search');
+                icon.classList.add('bi-x');
+                searchBarContainer.style.display = "block";
+            } else {
+                icon.classList.remove('bi-x');
+                icon.classList.add('bi-search');
+                searchBarContainer.style.display = "none";
+            }
+
+        }
+
+        function myfunction() {
+            const type = document.getElementById("foodType").value;
+            const ingredients = document.getElementById('searchInput').value;
+
+            const formData = new FormData();
+            formData.append('type', type);
+            formData.append('ingredients', ingredients);
+
+            const urlEncodedData = new URLSearchParams(formData).toString();
+
+            fetch('http://127.0.0.1:5000/chat', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: urlEncodedData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const reply = data.reply;
+                    console.log(`Python Reply: ${reply}`);
+                    // Further processing or display of the reply in your application
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+
+
+        setInterval(showSlide, 5000); 
+    </script>
+
+</body>
+
+</html>
